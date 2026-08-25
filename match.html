@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>Dhinesh FC - Match</title>
 
 <style>
@@ -11,283 +13,310 @@
     margin:0;
     padding:0;
     user-select:none;
+    -webkit-user-select:none;
 }
 
-html,body{
-    width:100%;
-    height:100%;
+body{
     overflow:hidden;
-    background:#08752b;
-    font-family:Arial,sans-serif;
+    background:#07120b;
+    font-family:Arial,Helvetica,sans-serif;
+    touch-action:none;
 }
 
+/* GAME */
 #game{
     position:relative;
     width:100vw;
     height:100vh;
     overflow:hidden;
-    background:
-      repeating-linear-gradient(
-        90deg,
-        #08752b 0px,
-        #08752b 80px,
-        #0a7e30 80px,
-        #0a7e30 160px
-      );
+    background:#16852c;
 }
 
 /* FIELD */
-
-.line{
+#field{
     position:absolute;
-    background:rgba(255,255,255,.85);
+    width:100%;
+    height:100%;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #16852c 0px,
+            #16852c 80px,
+            #198d30 80px,
+            #198d30 160px
+        );
 }
 
-.centerLine{
+/* FIELD LINES */
+.line{
+    position:absolute;
+    background:rgba(255,255,255,.8);
+}
+
+.center-line{
     width:3px;
     height:100%;
     left:50%;
-    top:0;
+    transform:translateX(-50%);
 }
 
-.centerCircle{
+.center-circle{
     position:absolute;
-    width:150px;
-    height:150px;
-    border:3px solid white;
+    width:180px;
+    height:180px;
+    border:3px solid rgba(255,255,255,.8);
     border-radius:50%;
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
 }
 
-.centerDot{
+.center-dot{
     position:absolute;
-    width:9px;
-    height:9px;
+    width:12px;
+    height:12px;
+    border-radius:50%;
     background:white;
-    border-radius:50%;
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
 }
 
+/* PENALTY AREAS */
 .box{
     position:absolute;
-    width:21%;
-    height:30%;
-    border:3px solid white;
-    top:35%;
+    width:27%;
+    height:32%;
+    top:34%;
+    border:3px solid rgba(255,255,255,.8);
 }
 
-.leftBox{
+.left-box{
     left:0;
     border-left:0;
 }
 
-.rightBox{
+.right-box{
     right:0;
     border-right:0;
 }
 
 .goal{
     position:absolute;
-    width:7%;
-    height:15%;
-    top:42.5%;
-    border:3px solid white;
+    width:6%;
+    height:14%;
+    top:43%;
+    border:4px solid white;
 }
 
-.leftGoal{
+.left-goal{
     left:0;
     border-left:0;
 }
 
-.rightGoal{
+.right-goal{
     right:0;
     border-right:0;
 }
 
-/* SCORE */
-
+/* SCOREBOARD */
 #scoreboard{
     position:absolute;
-    top:12px;
+    top:15px;
     left:50%;
     transform:translateX(-50%);
-    background:rgba(0,20,10,.94);
-    color:white;
-    padding:10px 24px;
+    min-width:310px;
+    padding:12px 20px;
     border-radius:14px;
-    z-index:50;
+    background:rgba(5,20,10,.9);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    z-index:20;
+    box-shadow:0 5px 20px rgba(0,0,0,.4);
+}
+
+.club-score{
     text-align:center;
     font-weight:bold;
-    white-space:nowrap;
 }
 
-#teams{
-    font-size:14px;
+.club-score small{
+    display:block;
+    color:#b8c8bd;
+    font-size:11px;
 }
 
-#score{
-    color:#ffd83b;
-    font-size:22px;
-    margin:3px 0;
+.score{
+    font-size:28px;
+    margin-top:2px;
 }
 
 #timer{
-    font-size:12px;
-    color:#ddd;
+    font-size:15px;
+    font-weight:bold;
+    color:#ffd83d;
 }
 
 /* PLAYER */
-
 .player{
     position:absolute;
     width:48px;
-    height:48px;
-    border-radius:50%;
+    height:65px;
+    text-align:center;
+    z-index:8;
+    transition:transform .08s linear;
+}
+
+.card{
+    width:42px;
+    height:52px;
+    margin:auto;
+    background:linear-gradient(145deg,#e9c85c,#966a15);
+    clip-path:polygon(
+        50% 0%,90% 13%,85% 78%,
+        50% 100%,15% 78%,10% 13%
+    );
     display:flex;
     align-items:center;
     justify-content:center;
+    color:#17210e;
     font-weight:900;
-    border:3px solid white;
-    z-index:20;
-    transition:left .08s,top .08s;
+    font-size:15px;
 }
 
-.myPlayer{
-    background:#168cff;
-    box-shadow:0 0 12px #168cff;
-}
-
-.enemy{
-    background:#e63232;
-}
-
-.name{
-    position:absolute;
-    top:48px;
-    font-size:10px;
+.player-name{
     color:white;
-    white-space:nowrap;
-    text-shadow:0 2px 3px black;
+    font-size:9px;
+    font-weight:bold;
+    margin-top:1px;
+    text-shadow:0 2px 3px #000;
 }
 
 .selected{
-    box-shadow:
-      0 0 0 5px rgba(255,220,0,.9),
-      0 0 20px #ffd400;
+    filter:drop-shadow(0 0 8px #00eaff);
 }
 
 /* BALL */
-
 #ball{
     position:absolute;
-    width:20px;
-    height:20px;
+    width:19px;
+    height:19px;
+    border-radius:50%;
     background:white;
     border:2px solid #222;
-    border-radius:50%;
-    z-index:30;
-    box-shadow:0 2px 5px #222;
+    z-index:15;
+    box-shadow:0 2px 5px rgba(0,0,0,.5);
 }
 
 /* CONTROLS */
-
 #joystick{
     position:absolute;
-    left:20px;
-    bottom:25px;
-    width:125px;
-    height:125px;
+    bottom:35px;
+    left:28px;
+    width:145px;
+    height:145px;
+    border:2px solid rgba(255,255,255,.45);
     border-radius:50%;
-    border:2px solid rgba(255,255,255,.55);
-    background:rgba(0,0,0,.20);
-    z-index:100;
+    background:rgba(0,0,0,.12);
+    z-index:30;
 }
 
 #stick{
     position:absolute;
-    width:58px;
-    height:58px;
-    left:31px;
-    top:31px;
+    width:62px;
+    height:62px;
     border-radius:50%;
-    background:rgba(255,255,255,.85);
+    background:rgba(235,245,235,.85);
+    left:41px;
+    top:41px;
 }
 
-#buttons{
+/* BUTTONS */
+.buttons{
     position:absolute;
-    right:18px;
-    bottom:20px;
-    width:190px;
-    height:210px;
-    z-index:100;
+    right:25px;
+    bottom:30px;
+    width:210px;
+    height:180px;
+    z-index:30;
 }
 
 .action{
     position:absolute;
     border-radius:50%;
-    border:3px solid white;
-    font-weight:bold;
+    border:3px solid rgba(255,255,255,.7);
     color:white;
-    box-shadow:0 4px 8px rgba(0,0,0,.4);
-}
-
-#pass{
-    width:75px;
-    height:75px;
-    left:5px;
-    top:70px;
-    background:#168cff;
-}
-
-#sprint{
-    width:78px;
-    height:78px;
-    right:0;
-    top:10px;
-    background:#333;
+    font-weight:900;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.3);
 }
 
 #shoot{
-    width:85px;
-    height:85px;
+    width:78px;
+    height:78px;
     right:0;
     bottom:0;
-    background:#e63232;
+    background:#e53935;
 }
 
-/* MESSAGE */
+#pass{
+    width:68px;
+    height:68px;
+    left:0;
+    bottom:50px;
+    background:#1976d2;
+}
 
+#sprint{
+    width:70px;
+    height:70px;
+    right:15px;
+    top:0;
+    background:rgba(20,30,20,.55);
+}
+
+.action:active{
+    transform:scale(.9);
+}
+
+/* MATCH MESSAGE */
 #message{
-    display:none;
     position:absolute;
+    top:50%;
     left:50%;
-    top:42%;
     transform:translate(-50%,-50%);
+    z-index:100;
     color:white;
-    font-size:34px;
+    font-size:38px;
     font-weight:900;
-    text-shadow:0 3px 8px black;
-    z-index:200;
+    text-shadow:0 4px 10px #000;
+    display:none;
+    text-align:center;
+}
+
+#message small{
+    display:block;
+    font-size:16px;
+    margin-top:8px;
 }
 
 /* PAUSE */
-
 #pause{
     position:absolute;
-    right:12px;
-    top:12px;
+    right:15px;
+    top:18px;
+    z-index:30;
     width:40px;
     height:40px;
-    border:0;
     border-radius:50%;
-    background:rgba(0,0,0,.7);
+    border:0;
+    background:rgba(0,0,0,.55);
     color:white;
     font-size:18px;
-    z-index:100;
 }
 </style>
 </head>
@@ -296,477 +325,376 @@ html,body{
 
 <div id="game">
 
-    <!-- SCORE -->
-    <div id="scoreboard">
-        <div id="teams">
-            DHINESH FC &nbsp; VS &nbsp; OPPONENT
-        </div>
+    <div id="field">
 
-        <div id="score">
-            0 - 0
-        </div>
+        <div class="line center-line"></div>
+        <div class="center-circle"></div>
+        <div class="center-dot"></div>
 
-        <div id="timer">
-            00:00
-        </div>
+        <div class="box left-box"></div>
+        <div class="box right-box"></div>
+
+        <div class="goal left-goal"></div>
+        <div class="goal right-goal"></div>
+
     </div>
 
-    <button id="pause" onclick="pauseGame()">Ⅱ</button>
+    <!-- SCORE -->
+    <div id="scoreboard">
 
-    <!-- FIELD -->
+        <div class="club-score">
+            <small>DHINESH FC</small>
+            <div class="score" id="myScore">0</div>
+        </div>
 
-    <div class="line centerLine"></div>
+        <div id="timer">00:00</div>
 
-    <div class="centerCircle"></div>
-    <div class="centerDot"></div>
+        <div class="club-score">
+            <small>REAL UNITED</small>
+            <div class="score" id="enemyScore">0</div>
+        </div>
 
-    <div class="box leftBox"></div>
-    <div class="box rightBox"></div>
-
-    <div class="goal leftGoal"></div>
-    <div class="goal rightGoal"></div>
+    </div>
 
     <!-- PLAYERS -->
 
-    <div class="player myPlayer selected"
+    <div class="player selected"
          id="p1"
-         style="left:45%;top:28%;">
-        91
-        <div class="name">DHRUV</div>
+         style="left:47%;top:45%;">
+        <div class="card">91</div>
+        <div class="player-name">DHRUV</div>
     </div>
 
-    <div class="player myPlayer"
-         id="p2"
-         style="left:27%;top:40%;">
-        86
-        <div class="name">SAM</div>
+    <div class="player"
+         style="left:25%;top:35%;">
+        <div class="card">86</div>
+        <div class="player-name">SAM</div>
     </div>
 
-    <div class="player myPlayer"
-         id="p3"
-         style="left:63%;top:40%;">
-        87
-        <div class="name">VIVEK</div>
+    <div class="player"
+         style="left:68%;top:35%;">
+        <div class="card">87</div>
+        <div class="player-name">VIVEK</div>
     </div>
 
-    <div class="player myPlayer"
-         id="p4"
-         style="left:40%;top:54%;">
-        84
-        <div class="name">VIKAS</div>
+    <div class="player"
+         style="left:35%;top:50%;">
+        <div class="card">84</div>
+        <div class="player-name">VIKAS</div>
     </div>
 
-    <div class="player myPlayer"
-         id="p5"
-         style="left:56%;top:54%;">
-        88
-        <div class="name">RAHUL</div>
+    <div class="player"
+         style="left:58%;top:50%;">
+        <div class="card">87</div>
+        <div class="player-name">RAHUL</div>
     </div>
 
-    <!-- OPPONENTS -->
-
-    <div class="player enemy"
-         id="e1"
-         style="left:25%;top:65%;">
-        84
-        <div class="name">OP1</div>
+    <div class="player"
+         style="left:18%;top:67%;">
+        <div class="card">81</div>
+        <div class="player-name">ROHAN</div>
     </div>
 
-    <div class="player enemy"
-         id="e2"
-         style="left:62%;top:65%;">
-        86
-        <div class="name">OP2</div>
+    <div class="player"
+         style="left:35%;top:67%;">
+        <div class="card">85</div>
+        <div class="player-name">KARAN</div>
     </div>
 
-    <div class="player enemy"
-         id="e3"
-         style="left:44%;top:72%;">
-        89
-        <div class="name">OP3</div>
+    <div class="player"
+         style="left:58%;top:67%;">
+        <div class="card">84</div>
+        <div class="player-name">DEV</div>
     </div>
 
-    <!-- BALL -->
+    <div class="player"
+         style="left:75%;top:67%;">
+        <div class="card">80</div>
+        <div class="player-name">ADITYA</div>
+    </div>
+
+    <div class="player"
+         style="left:47%;top:79%;">
+        <div class="card">82</div>
+        <div class="player-name">ARJUN</div>
+    </div>
+
+    <!-- OPPONENT -->
+    <div class="player"
+         style="left:47%;top:8%;filter:hue-rotate(150deg);">
+        <div class="card">90</div>
+        <div class="player-name">ALEX</div>
+    </div>
 
     <div id="ball"></div>
 
     <!-- JOYSTICK -->
-
     <div id="joystick">
         <div id="stick"></div>
     </div>
 
-    <!-- BUTTONS -->
+    <!-- ACTION BUTTONS -->
+    <div class="buttons">
 
-    <div id="buttons">
-
-        <button
-            id="pass"
-            class="action"
-            onclick="passBall()">
-            PASS
-        </button>
-
-        <button
-            id="sprint"
-            class="action"
-            onclick="sprint()">
+        <div class="action" id="sprint">
             SPRINT
-        </button>
+        </div>
 
-        <button
-            id="shoot"
-            class="action"
-            onclick="shoot()">
+        <div class="action" id="pass">
+            PASS
+        </div>
+
+        <div class="action" id="shoot">
             SHOOT
-        </button>
+        </div>
 
     </div>
 
-    <div id="message"></div>
+    <button id="pause" onclick="pauseGame()">Ⅱ</button>
+
+    <div id="message">
+        GOAL!
+        <small>DHINESH FC</small>
+    </div>
 
 </div>
 
 <script>
 
-/* -------------------------
-   GAME VARIABLES
-------------------------- */
-
-let myScore = 0;
-let opponentScore = 0;
-
 let seconds = 0;
-
 let paused = false;
 
-let playerX = window.innerWidth * .45;
-let playerY = window.innerHeight * .28;
+let score1 = 0;
+let score2 = 0;
 
-let sprinting = false;
+const timer = document.getElementById("timer");
+const ball = document.getElementById("ball");
+const player = document.getElementById("p1");
 
-const player =
-    document.getElementById("p1");
+let playerX = window.innerWidth * .49;
+let playerY = window.innerHeight * .48;
 
-const ball =
-    document.getElementById("ball");
+let ballX = playerX + 15;
+let ballY = playerY + 25;
 
-const stick =
-    document.getElementById("stick");
-
-const joystick =
-    document.getElementById("joystick");
-
-
-/* -------------------------
-   TIMER
-------------------------- */
-
-setInterval(function(){
+function updateTimer(){
 
     if(paused) return;
 
     seconds++;
 
-    let minutes =
-        Math.floor(seconds / 60);
+    let min = Math.floor(seconds / 60);
+    let sec = seconds % 60;
 
-    let secs =
-        seconds % 60;
+    timer.innerText =
+        String(min).padStart(2,"0") +
+        ":" +
+        String(sec).padStart(2,"0");
 
-    document.getElementById("timer")
-        .innerText =
-        String(minutes).padStart(2,"0")
-        + ":" +
-        String(secs).padStart(2,"0");
-
-},1000);
-
-
-/* -------------------------
-   MESSAGE
-------------------------- */
-
-function message(text){
-
-    const box =
-        document.getElementById("message");
-
-    box.innerText = text;
-    box.style.display = "block";
-
-    setTimeout(function(){
-
-        box.style.display = "none";
-
-    },900);
+    if(seconds >= 90){
+        endMatch();
+    }
 }
 
+setInterval(updateTimer,1000);
 
-/* -------------------------
-   UPDATE SCORE
-------------------------- */
 
-function updateScore(){
+/* POSITION PLAYER */
 
-    document.getElementById("score")
-        .innerText =
-        myScore + " - " + opponentScore;
+function updatePlayer(){
 
+    player.style.left = playerX + "px";
+    player.style.top = playerY + "px";
+
+    ballX = playerX + 15;
+    ballY = playerY + 55;
+
+    ball.style.left = ballX + "px";
+    ball.style.top = ballY + "px";
 }
 
+updatePlayer();
 
-/* -------------------------
-   PASS
-------------------------- */
 
-function passBall(){
+/* JOYSTICK */
 
-    if(paused) return;
+const joystick = document.getElementById("joystick");
+const stick = document.getElementById("stick");
 
-    message("PASS!");
+let dragging = false;
 
-    let x =
-        playerX + 70;
+joystick.addEventListener("pointerdown", e => {
+    dragging = true;
+    joystick.setPointerCapture(e.pointerId);
+});
 
-    let y =
-        playerY;
+joystick.addEventListener("pointermove", e => {
 
-    animateBall(x,y);
-}
+    if(!dragging || paused) return;
 
+    const rect = joystick.getBoundingClientRect();
 
-/* -------------------------
-   SHOOT
-------------------------- */
+    let x = e.clientX - rect.left - rect.width/2;
+    let y = e.clientY - rect.top - rect.height/2;
 
-function shoot(){
+    let distance = Math.sqrt(x*x + y*y);
+    let max = 40;
 
-    if(paused) return;
+    if(distance > max){
 
-    message("SHOOT!");
-
-    let chance =
-        Math.random();
-
-    setTimeout(function(){
-
-        if(chance > .45){
-
-            myScore++;
-
-            updateScore();
-
-            message("⚽ GOAL!");
-
-        }else{
-
-            message("🧤 SAVE!");
-
-        }
-
-    },700);
-
-}
-
-
-/* -------------------------
-   SPRINT
-------------------------- */
-
-function sprint(){
-
-    if(paused) return;
-
-    sprinting = true;
-
-    message("⚡ SPRINT!");
-
-    setTimeout(function(){
-
-        sprinting = false;
-
-    },1200);
-
-}
-
-
-/* -------------------------
-   BALL
-------------------------- */
-
-function animateBall(x,y){
-
-    ball.style.left = x + "px";
-    ball.style.top = y + "px";
-
-}
-
-
-/* -------------------------
-   JOYSTICK
-------------------------- */
-
-let touching = false;
-
-joystick.addEventListener(
-    "touchstart",
-    function(e){
-
-        touching = true;
-
-        e.preventDefault();
-
-    },
-    {passive:false}
-);
-
-
-joystick.addEventListener(
-    "touchmove",
-    function(e){
-
-        if(!touching || paused)
-            return;
-
-        e.preventDefault();
-
-        let touch =
-            e.touches[0];
-
-        let rect =
-            joystick.getBoundingClientRect();
-
-        let x =
-            touch.clientX -
-            rect.left -
-            62;
-
-        let y =
-            touch.clientY -
-            rect.top -
-            62;
-
-        let distance =
-            Math.sqrt(x*x+y*y);
-
-        if(distance > 38){
-
-            x =
-                x / distance * 38;
-
-            y =
-                y / distance * 38;
-
-        }
-
-        stick.style.transform =
-            "translate("+x+"px,"+y+"px)";
-
-        let speed =
-            sprinting ? 1.8 : 1;
-
-        playerX += x * .08 * speed;
-        playerY += y * .08 * speed;
-
-        playerX =
-            Math.max(
-                5,
-                Math.min(
-                    window.innerWidth-53,
-                    playerX
-                )
-            );
-
-        playerY =
-            Math.max(
-                100,
-                Math.min(
-                    window.innerHeight-70,
-                    playerY
-                )
-            );
-
-        player.style.left =
-            playerX + "px";
-
-        player.style.top =
-            playerY + "px";
-
-        animateBall(
-            playerX+14,
-            playerY+55
-        );
-
-    },
-    {passive:false}
-);
-
-
-joystick.addEventListener(
-    "touchend",
-    function(){
-
-        touching = false;
-
-        stick.style.transform =
-            "translate(0,0)";
+        x = x/distance*max;
+        y = y/distance*max;
 
     }
-);
+
+    stick.style.transform =
+        `translate(${x}px,${y}px)`;
+
+    playerX += x * .10;
+    playerY += y * .10;
+
+    playerX = Math.max(0,Math.min(window.innerWidth-50,playerX));
+    playerY = Math.max(70,Math.min(window.innerHeight-120,playerY));
+
+    updatePlayer();
+
+});
+
+joystick.addEventListener("pointerup", () => {
+
+    dragging = false;
+    stick.style.transform = "translate(0,0)";
+
+});
 
 
-/* -------------------------
-   OPPONENT AI
-------------------------- */
+/* PASS */
 
-const enemies = [
-    document.getElementById("e1"),
-    document.getElementById("e2"),
-    document.getElementById("e3")
-];
-
-setInterval(function(){
+document.getElementById("pass").addEventListener("pointerdown",()=>{
 
     if(paused) return;
 
-    enemies.forEach(function(enemy){
+    ball.style.transition = ".25s";
 
-        let left =
-            parseFloat(enemy.style.left);
+    ballX += 90;
 
-        let top =
-            parseFloat(enemy.style.top);
+    if(ballX > window.innerWidth-40){
+        ballX = window.innerWidth-40;
+    }
 
-        let move =
-            (Math.random()-.5) * .5;
+    ball.style.left = ballX+"px";
 
-        enemy.style.left =
-            (left + move) + "%";
-
-        enemy.style.top =
-            (top + move) + "%";
-
-    });
-
-},300);
+});
 
 
-/* -------------------------
-   PAUSE
-------------------------- */
+/* SHOOT */
+
+document.getElementById("shoot").addEventListener("pointerdown",()=>{
+
+    if(paused) return;
+
+    ball.style.transition = ".5s";
+
+    let targetX = window.innerWidth-5;
+    let targetY = window.innerHeight/2;
+
+    ball.style.left = targetX+"px";
+    ball.style.top = targetY+"px";
+
+    setTimeout(()=>{
+
+        score1++;
+
+        document.getElementById("myScore").innerText = score1;
+
+        showGoal();
+
+        resetBall();
+
+    },550);
+
+});
+
+
+/* SPRINT */
+
+document.getElementById("sprint").addEventListener("pointerdown",()=>{
+
+    if(paused) return;
+
+    playerX += 90;
+
+    if(playerX > window.innerWidth-70){
+        playerX = window.innerWidth-70;
+    }
+
+    updatePlayer();
+
+});
+
+
+/* GOAL */
+
+function showGoal(){
+
+    const msg = document.getElementById("message");
+
+    msg.style.display="block";
+
+    setTimeout(()=>{
+        msg.style.display="none";
+    },1500);
+
+}
+
+
+/* RESET BALL */
+
+function resetBall(){
+
+    setTimeout(()=>{
+
+        ballX = playerX + 15;
+        ballY = playerY + 55;
+
+        ball.style.transition=".2s";
+        ball.style.left=ballX+"px";
+        ball.style.top=ballY+"px";
+
+    },800);
+
+}
+
+
+/* PAUSE */
 
 function pauseGame(){
 
     paused = !paused;
 
-    document.getElementById("pause")
-        .innerText =
+    document.getElementById("pause").innerText =
         paused ? "▶" : "Ⅱ";
 
-    message(
-        paused ? "PAUSED" : "RESUME"
-    );
+}
+
+
+/* END */
+
+function endMatch(){
+
+    paused = true;
+
+    const msg = document.getElementById("message");
+
+    msg.innerHTML =
+        "FULL TIME" +
+        "<small>DHINESH FC " +
+        score1 +
+        " - " +
+        score2 +
+        " REAL UNITED</small>";
+
+    msg.style.display="block";
 
 }
 
