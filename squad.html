@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dhinesh FC - Squad</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(#071b12,#0d3020);
+  color:white;
+  overflow-x:hidden;
+}
+
+.header{
+  padding:18px 15px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#07150f;
+  border-bottom:1px solid #31553f;
+}
+
+.back{
+  border:0;
+  background:#183625;
+  color:white;
+  padding:10px 16px;
+  border-radius:20px;
+  font-weight:bold;
+}
+
+.title{
+  font-size:20px;
+  font-weight:900;
+}
+
+.currency{
+  font-size:13px;
+}
+
+.info{
+  margin:12px;
+  padding:15px;
+  border-radius:16px;
+  background:linear-gradient(145deg,#173d28,#0b2116);
+  border:1px solid #386347;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.club{
+  font-size:21px;
+  font-weight:900;
+}
+
+.formation{
+  color:#9fb5a7;
+  font-size:13px;
+  margin-top:5px;
+}
+
+.ovr{
+  text-align:center;
+}
+
+.ovr strong{
+  display:block;
+  font-size:38px;
+  color:#ffd83d;
+}
+
+.ovr small{
+  color:#b9c7bf;
+}
+
+.pitch{
+  position:relative;
+  margin:12px;
+  height:560px;
+  border-radius:18px;
+  overflow:hidden;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #187b3d 0px,
+      #187b3d 55px,
+      #1a8240 55px,
+      #1a8240 110px
+    );
+  border:3px solid rgba(255,255,255,.7);
+}
+
+.line{
+  position:absolute;
+  background:rgba(255,255,255,.75);
+}
+
+.midline{
+  width:100%;
+  height:2px;
+  top:50%;
+}
+
+.circle{
+  position:absolute;
+  width:100px;
+  height:100px;
+  border:2px solid rgba(255,255,255,.75);
+  border-radius:50%;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+}
+
+.boxTop{
+  position:absolute;
+  width:170px;
+  height:85px;
+  border:2px solid rgba(255,255,255,.75);
+  border-top:0;
+  left:50%;
+  top:0;
+  transform:translateX(-50%);
+}
+
+.boxBottom{
+  position:absolute;
+  width:170px;
+  height:85px;
+  border:2px solid rgba(255,255,255,.75);
+  border-bottom:0;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+}
+
+.player{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  width:68px;
+}
+
+.card{
+  width:58px;
+  height:76px;
+  margin:auto;
+  clip-path:polygon(50% 0,92% 12%,84% 82%,50% 100%,16% 82%,8% 12%);
+  background:linear-gradient(145deg,#f1d36b,#956b18);
+  border:2px solid #ffe899;
+  color:#172315;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  font-weight:900;
+  box-shadow:0 4px 10px #06140b;
+}
+
+.rating{
+  font-size:19px;
+}
+
+.position{
+  font-size:10px;
+}
+
+.name{
+  font-size:11px;
+  margin-top:4px;
+  font-weight:bold;
+  white-space:nowrap;
+}
+
+.gk{left:50%;bottom:12px}
+.lb{left:18%;bottom:125px}
+.cb1{left:39%;bottom:105px}
+.cb2{left:61%;bottom:105px}
+.rb{left:82%;bottom:125px}
+
+.lcm{left:27%;bottom:245px}
+.cm{left:50%;bottom:270px}
+.rcm{left:73%;bottom:245px}
+
+.lw{left:20%;top:120px}
+.st{left:50%;top:85px}
+.rw{left:80%;top:120px}
+
+.subs{
+  margin:15px 12px 30px;
+  padding:15px;
+  border-radius:16px;
+  background:#0b2116;
+  border:1px solid #31563e;
+}
+
+.subs h2{
+  font-size:18px;
+  margin-bottom:15px;
+}
+
+.subrow{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+}
+
+.sub{
+  min-width:85px;
+  padding:10px;
+  border-radius:12px;
+  background:#183726;
+  text-align:center;
+}
+
+.subrating{
+  color:#ffd83d;
+  font-size:20px;
+  font-weight:bold;
+}
+
+.sub small{
+  color:#b7c7bd;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <button class="back" onclick="goHome()">← HOME</button>
+  <div class="title">MY SQUAD</div>
+  <div class="currency">🪙 125K</div>
+</div>
+
+<div class="info">
+
+  <div>
+    <div class="club">DHINESH FC</div>
+    <div class="formation">4-3-3 ATTACK • INDIA</div>
+  </div>
+
+  <div class="ovr">
+    <strong>84</strong>
+    <small>TEAM OVR</small>
+  </div>
+
+</div>
+
+<div class="pitch">
+
+  <div class="line midline"></div>
+  <div class="circle"></div>
+  <div class="boxTop"></div>
+  <div class="boxBottom"></div>
+
+  <!-- GOALKEEPER -->
+  <div class="player gk">
+    <div class="card">
+      <div class="rating">82</div>
+      <div class="position">GK</div>
+    </div>
+    <div class="name">ARJUN</div>
+  </div>
+
+  <!-- DEFENCE -->
+  <div class="player lb">
+    <div class="card">
+      <div class="rating">81</div>
+      <div class="position">LB</div>
+    </div>
+    <div class="name">ROHAN</div>
+  </div>
+
+  <div class="player cb1">
+    <div class="card">
+      <div class="rating">85</div>
+      <div class="position">CB</div>
+    </div>
+    <div class="name">KARAN</div>
+  </div>
+
+  <div class="player cb2">
+    <div class="card">
+      <div class="rating">84</div>
+      <div class="position">CB</div>
+    </div>
+    <div class="name">DEV</div>
+  </div>
+
+  <div class="player rb">
+    <div class="card">
+      <div class="rating">80</div>
+      <div class="position">RB</div>
+    </div>
+    <div class="name">ADITYA</div>
+  </div>
+
+  <!-- MIDFIELD -->
+  <div class="player lcm">
+    <div class="card">
+      <div class="rating">84</div>
+      <div class="position">CM</div>
+    </div>
+    <div class="name">VIKAS</div>
+  </div>
+
+  <div class="player cm">
+    <div class="card">
+      <div class="rating">87</div>
+      <div class="position">CM</div>
+    </div>
+    <div class="name">RAHUL</div>
+  </div>
+
+  <div class="player rcm">
+    <div class="card">
+      <div class="rating">83</div>
+      <div class="position">CM</div>
+    </div>
+    <div class="name">AJAY</div>
+  </div>
+
+  <!-- ATTACK -->
+  <div class="player lw">
+    <div class="card">
+      <div class="rating">86</div>
+      <div class="position">LW</div>
+    </div>
+    <div class="name">SAM</div>
+  </div>
+
+  <div class="player st">
+    <div class="card">
+      <div class="rating">91</div>
+      <div class="position">ST</div>
+    </div>
+    <div class="name">DHRUV</div>
+  </div>
+
+  <div class="player rw">
+    <div class="card">
+      <div class="rating">87</div>
+      <div class="position">RW</div>
+    </div>
+    <div class="name">VIVEK</div>
+  </div>
+
+</div>
+
+<div class="subs">
+
+  <h2>SUBSTITUTES</h2>
+
+  <div class="subrow">
+
+    <div class="sub">
+      <div class="subrating">79</div>
+      <b>GK</b><br>
+      <small>Vishal</small>
+    </div>
+
+    <div class="sub">
+      <div class="subrating">81</div>
+      <b>CB</b><br>
+      <small>Manu</small>
+    </div>
+
+    <div class="sub">
+      <div class="subrating">82</div>
+      <b>CM</b><br>
+      <small>Ravi</small>
+    </div>
+
+    <div class="sub">
+      <div class="subrating">84</div>
+      <b>LW</b><br>
+      <small>Akash</small>
+    </div>
+
+    <div class="sub">
+      <div class="subrating">83</div>
+      <b>ST</b><br>
+      <small>Surya</small>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+function goHome(){
+  window.location.href="index.html";
+}
+
+</script>
+
+</body>
+</html>
