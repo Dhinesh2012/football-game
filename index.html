@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Game</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+      background: #16852a;
+      font-family: Arial, sans-serif;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #score {
+      position: fixed;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.75);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      z-index: 5;
+    }
+
+    #joystick {
+      position: fixed;
+      left: 25px;
+      bottom: 35px;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.25);
+      border: 2px solid rgba(255,255,255,.5);
+    }
+
+    #stick {
+      position: absolute;
+      width: 55px;
+      height: 55px;
+      left: 37px;
+      top: 37px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.85);
+    }
+
+    .button {
+      position: fixed;
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      color: white;
+      font-weight: bold;
+      border: 3px solid rgba(255,255,255,.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      z-index: 5;
+    }
+
+    #shoot {
+      right: 25px;
+      bottom: 40px;
+      background: #d83232;
+    }
+
+    #pass {
+      right: 120px;
+      bottom: 115px;
+      background: #1976d2;
+    }
+
+    #sprint {
+      right: 25px;
+      bottom: 140px;
+      background: #168f45;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="score">MY TEAM 0 - 0 OPPONENT</div>
+
+<canvas id="game"></canvas>
+
+<div id="joystick">
+  <div id="stick"></div>
+</div>
+
+<div id="shoot" class="button">SHOOT</div>
+<div id="pass" class="button">PASS</div>
+<div id="sprint" class="button">SPRINT</div>
+
+<script>
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let W, H;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+window.addEventListener("resize", resize);
+resize();
+
+let player = {
+  x: W / 2,
+  y: H / 2,
+  r: 20,
+  speed: 4
+};
+
+let ball = {
+  x: player.x + 25,
+  y: player.y,
+  r: 9,
+  vx: 0,
+  vy: 0
+};
+
+let joystickX = 0;
+let joystickY = 0;
+let sprinting = false;
+
+function drawField() {
+
+  ctx.fillStyle = "#16852a";
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.strokeStyle = "rgba(255,255,255,.8)";
+  ctx.lineWidth = 3;
+
+  // Halfway line
+  ctx.beginPath();
+  ctx.moveTo(W / 2, 0);
+  ctx.lineTo(W / 2, H);
+  ctx.stroke();
+
+  // Centre circle
+  ctx.beginPath();
+  ctx.arc(W / 2, H / 2, 70, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Centre spot
+  ctx.beginPath();
+  ctx.arc(W / 2, H / 2, 5, 0, Math.PI * 2);
+  ctx.fillStyle = "white";
+  ctx.fill();
+
+  // Goals
+  ctx.strokeRect(0, H/2 - 80, 60, 160);
+  ctx.strokeRect(W - 60, H/2 - 80, 60, 160);
+
+  // Penalty boxes
+  ctx.strokeRect(0, H/2 - 180, 160, 360);
+  ctx.strokeRect(W - 160, H/2 - 180, 160, 360);
+}
+
+function drawPlayer() {
+
+  // Shadow
+  ctx.beginPath();
+  ctx.ellipse(
+    player.x,
+    player.y + 18,
+    22,
+    8,
+    0,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.fillStyle = "rgba(0,0,0,.3)";
+  ctx.fill();
+
+  // Body
+  ctx.beginPath();
+  ctx.arc(
+    player.x,
+    player.y,
+    player.r,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
+
+  ctx.strokeStyle = "#1769aa";
+  ctx.lineWidth = 5;
+  ctx.stroke();
+
+  // Selection indicator
+  ctx.beginPath();
+  ctx.arc(
+    player.x,
+    player.y,
+    29,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.strokeStyle = "#00e5ff";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+}
+
+function drawBall() {
+
+  ctx.beginPath();
+
+  ctx.arc(
+    ball.x,
+    ball.y,
+    ball.r,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.fillStyle = "white";
+  ctx.fill();
+
+  ctx.strokeStyle = "#222";
+  ctx.stroke();
+}
+
+function update() {
+
+  let speed = sprinting ? 7 : player.speed;
+
+  player.x += joystickX * speed;
+  player.y += joystickY * speed;
+
+  player.x = Math.max(30, Math.min(W - 30, player.x));
+  player.y = Math.max(30, Math.min(H - 30, player.y));
+
+  // Keep ball near player
+  let dx = ball.x - player.x;
+  let dy = ball.y - player.y;
+
+  if (Math.sqrt(dx*dx + dy*dy) < 50) {
+
+    ball.x += (player.x + joystickX * 25 - ball.x) * .2;
+    ball.y += (player.y + joystickY * 25 - ball.y) * .2;
+
+  }
+
+  ball.x += ball.vx;
+  ball.y += ball.vy;
+
+  ball.vx *= .96;
+  ball.vy *= .96;
+}
+
+function shoot() {
+
+  let dx = joystickX;
+  let dy = joystickY;
+
+  if (dx === 0 && dy === 0) {
+    dx = 1;
+    dy = 0;
+  }
+
+  ball.vx = dx * 12;
+  ball.vy = dy * 12;
+}
+
+function passBall() {
+
+  ball.vx = 8;
+  ball.vy = 0;
+
+}
+
+function loop() {
+
+  drawField();
+
+  update();
+
+  drawPlayer();
+  drawBall();
+
+  requestAnimationFrame(loop);
+}
+
+loop();
+
+
+// -------------------------
+// JOYSTICK
+// -------------------------
+
+const joystick =
+  document.getElementById("joystick");
+
+const stick =
+  document.getElementById("stick");
+
+function moveJoystick(x, y) {
+
+  let rect = joystick.getBoundingClientRect();
+
+  let centerX = rect.left + rect.width / 2;
+  let centerY = rect.top + rect.height / 2;
+
+  let dx = x - centerX;
+  let dy = y - centerY;
+
+  let distance = Math.sqrt(dx*dx + dy*dy);
+
+  let max = 45;
+
+  if (distance > max) {
+
+    dx = dx / distance * max;
+    dy = dy / distance * max;
+
+  }
+
+  stick.style.left =
+    (37 + dx) + "px";
+
+  stick.style.top =
+    (37 + dy) + "px";
+
+  joystickX = dx / max;
+  joystickY = dy / max;
+}
+
+function resetJoystick() {
+
+  joystickX = 0;
+  joystickY = 0;
+
+  stick.style.left = "37px";
+  stick.style.top = "37px";
+}
+
+joystick.addEventListener("touchmove", e => {
+
+  e.preventDefault();
+
+  let touch = e.touches[0];
+
+  moveJoystick(
+    touch.clientX,
+    touch.clientY
+  );
+
+});
+
+joystick.addEventListener("touchend", resetJoystick);
+
+
+// -------------------------
+// BUTTONS
+// -------------------------
+
+document.getElementById("shoot")
+.addEventListener("touchstart", e => {
+
+  e.preventDefault();
+  shoot();
+
+});
+
+document.getElementById("pass")
+.addEventListener("touchstart", e => {
+
+  e.preventDefault();
+  passBall();
+
+});
+
+document.getElementById("sprint")
+.addEventListener("touchstart", e => {
+
+  e.preventDefault();
+  sprinting = true;
+
+});
+
+document.getElementById("sprint")
+.addEventListener("touchend", () => {
+
+  sprinting = false;
+
+});
+
+</script>
+
+</body>
+</html>
