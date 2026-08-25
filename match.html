@@ -2,10 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0,
-      maximum-scale=1.0,user-scalable=no">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 <title>Dhinesh FC - Match</title>
 
 <style>
@@ -13,66 +10,50 @@
     box-sizing:border-box;
     margin:0;
     padding:0;
-    touch-action:none;
+    user-select:none;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#08752b;
     font-family:Arial,sans-serif;
 }
 
-body{
-    overflow:hidden;
-    background:#087b2d;
+#game{
+    position:relative;
+    width:100vw;
     height:100vh;
-    color:white;
-}
-
-/* SCORE */
-.score{
-    position:fixed;
-    top:12px;
-    left:50%;
-    transform:translateX(-50%);
-    background:rgba(0,20,10,.92);
-    padding:10px 25px;
-    border-radius:14px;
-    z-index:20;
-    text-align:center;
-    font-weight:bold;
-}
-
-.score small{
-    display:block;
-    color:#ffd83d;
-    font-size:11px;
-    margin-bottom:3px;
+    overflow:hidden;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        #08752b 0px,
+        #08752b 80px,
+        #0a7e30 80px,
+        #0a7e30 160px
+      );
 }
 
 /* FIELD */
-.field{
+
+.line{
     position:absolute;
-    width:100%;
-    height:100%;
-    background:
-    repeating-linear-gradient(
-        90deg,
-        #087b2d 0px,
-        #087b2d 75px,
-        #0a8432 75px,
-        #0a8432 150px
-    );
+    background:rgba(255,255,255,.85);
 }
 
-/* FIELD LINES */
-.midline{
-    position:absolute;
+.centerLine{
     width:3px;
     height:100%;
-    background:rgba(255,255,255,.8);
     left:50%;
+    top:0;
 }
 
-.center{
+.centerCircle{
     position:absolute;
-    width:145px;
-    height:145px;
+    width:150px;
+    height:150px;
     border:3px solid white;
     border-radius:50%;
     left:50%;
@@ -91,13 +72,30 @@ body{
     transform:translate(-50%,-50%);
 }
 
-/* GOALS */
+.box{
+    position:absolute;
+    width:21%;
+    height:30%;
+    border:3px solid white;
+    top:35%;
+}
+
+.leftBox{
+    left:0;
+    border-left:0;
+}
+
+.rightBox{
+    right:0;
+    border-right:0;
+}
+
 .goal{
     position:absolute;
-    width:20%;
-    height:28%;
+    width:7%;
+    height:15%;
+    top:42.5%;
     border:3px solid white;
-    top:36%;
 }
 
 .leftGoal{
@@ -110,387 +108,667 @@ body{
     border-right:0;
 }
 
-/* PLAYERS */
+/* SCORE */
+
+#scoreboard{
+    position:absolute;
+    top:12px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,20,10,.94);
+    color:white;
+    padding:10px 24px;
+    border-radius:14px;
+    z-index:50;
+    text-align:center;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+#teams{
+    font-size:14px;
+}
+
+#score{
+    color:#ffd83b;
+    font-size:22px;
+    margin:3px 0;
+}
+
+#timer{
+    font-size:12px;
+    color:#ddd;
+}
+
+/* PLAYER */
+
 .player{
     position:absolute;
     width:48px;
     height:48px;
     border-radius:50%;
     display:flex;
-    justify-content:center;
     align-items:center;
-    font-weight:bold;
+    justify-content:center;
+    font-weight:900;
     border:3px solid white;
-    box-shadow:0 3px 10px #003b15;
-    z-index:8;
+    z-index:20;
+    transition:left .08s,top .08s;
 }
 
-.blue{
+.myPlayer{
     background:#168cff;
+    box-shadow:0 0 12px #168cff;
 }
 
-.red{
-    background:#e73535;
+.enemy{
+    background:#e63232;
 }
 
-/* PLAYER POSITIONS */
-#p1{left:45%;top:27%}
-#p2{left:27%;top:38%}
-#p3{left:63%;top:38%}
-#p4{left:38%;top:52%}
-#p5{left:55%;top:52%}
+.name{
+    position:absolute;
+    top:48px;
+    font-size:10px;
+    color:white;
+    white-space:nowrap;
+    text-shadow:0 2px 3px black;
+}
 
-#op1{left:25%;top:65%}
-#op2{left:62%;top:65%}
-#op3{left:44%;top:72%}
+.selected{
+    box-shadow:
+      0 0 0 5px rgba(255,220,0,.9),
+      0 0 20px #ffd400;
+}
 
 /* BALL */
-.ball{
+
+#ball{
     position:absolute;
     width:20px;
     height:20px;
     background:white;
-    border-radius:50%;
-    left:50%;
-    top:48%;
-    z-index:10;
     border:2px solid #222;
-}
-
-/* JOYSTICK */
-.joystick{
-    position:fixed;
-    left:25px;
-    bottom:35px;
-    width:120px;
-    height:120px;
-    border:2px solid rgba(255,255,255,.5);
     border-radius:50%;
-    background:rgba(0,0,0,.18);
+    z-index:30;
+    box-shadow:0 2px 5px #222;
 }
 
-.stick{
+/* CONTROLS */
+
+#joystick{
     position:absolute;
-    width:55px;
-    height:55px;
-    background:rgba(255,255,255,.85);
-    border-radius:50%;
-    left:32px;
-    top:32px;
-}
-
-/* BUTTONS */
-.controls{
-    position:fixed;
-    right:20px;
+    left:20px;
     bottom:25px;
-    width:180px;
-    height:190px;
+    width:125px;
+    height:125px;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,.55);
+    background:rgba(0,0,0,.20);
+    z-index:100;
 }
 
-.btn{
+#stick{
+    position:absolute;
+    width:58px;
+    height:58px;
+    left:31px;
+    top:31px;
+    border-radius:50%;
+    background:rgba(255,255,255,.85);
+}
+
+#buttons{
+    position:absolute;
+    right:18px;
+    bottom:20px;
+    width:190px;
+    height:210px;
+    z-index:100;
+}
+
+.action{
     position:absolute;
     border-radius:50%;
     border:3px solid white;
     font-weight:bold;
-    font-size:14px;
     color:white;
-    box-shadow:0 4px 10px #003c18;
+    box-shadow:0 4px 8px rgba(0,0,0,.4);
 }
 
-.pass{
+#pass{
     width:75px;
     height:75px;
-    right:90px;
-    bottom:70px;
-    background:#147ee8;
+    left:5px;
+    top:70px;
+    background:#168cff;
 }
 
-.shoot{
-    width:82px;
-    height:82px;
+#sprint{
+    width:78px;
+    height:78px;
     right:0;
-    bottom:10px;
-    background:#e53232;
-}
-
-.sprint{
-    width:75px;
-    height:75px;
-    right:0;
-    bottom:105px;
+    top:10px;
     background:#333;
 }
 
-/* TIMER */
-.timer{
-    position:fixed;
-    top:75px;
-    left:50%;
-    transform:translateX(-50%);
-    background:rgba(0,0,0,.55);
-    padding:5px 14px;
-    border-radius:10px;
-    font-weight:bold;
-    z-index:20;
+#shoot{
+    width:85px;
+    height:85px;
+    right:0;
+    bottom:0;
+    background:#e63232;
 }
 
 /* MESSAGE */
-.message{
-    position:fixed;
-    top:50%;
+
+#message{
+    display:none;
+    position:absolute;
     left:50%;
+    top:42%;
     transform:translate(-50%,-50%);
+    color:white;
     font-size:34px;
     font-weight:900;
-    text-shadow:0 3px 8px #000;
-    display:none;
-    z-index:30;
+    text-shadow:0 3px 8px black;
+    z-index:200;
+}
+
+/* PAUSE */
+
+#pause{
+    position:absolute;
+    right:12px;
+    top:12px;
+    width:40px;
+    height:40px;
+    border:0;
+    border-radius:50%;
+    background:rgba(0,0,0,.7);
+    color:white;
+    font-size:18px;
+    z-index:100;
 }
 </style>
 </head>
 
 <body>
 
-<div class="score">
-    <small>DIVISION 5 • QUICK MATCH</small>
-    DHINESH FC &nbsp; <span id="score">0 - 0</span> &nbsp; OPPONENT
-</div>
+<div id="game">
 
-<div class="timer">
-    <span id="time">00:00</span>
-</div>
+    <!-- SCORE -->
+    <div id="scoreboard">
+        <div id="teams">
+            DHINESH FC &nbsp; VS &nbsp; OPPONENT
+        </div>
 
-<div class="field">
+        <div id="score">
+            0 - 0
+        </div>
 
-    <div class="midline"></div>
-
-    <div class="center">
-        <div class="centerDot"></div>
+        <div id="timer">
+            00:00
+        </div>
     </div>
+
+    <button id="pause" onclick="pauseGame()">Ⅱ</button>
+
+    <!-- FIELD -->
+
+    <div class="line centerLine"></div>
+
+    <div class="centerCircle"></div>
+    <div class="centerDot"></div>
+
+    <div class="box leftBox"></div>
+    <div class="box rightBox"></div>
 
     <div class="goal leftGoal"></div>
     <div class="goal rightGoal"></div>
 
-    <!-- MY TEAM -->
-    <div class="player blue" id="p1">91</div>
-    <div class="player blue" id="p2">86</div>
-    <div class="player blue" id="p3">87</div>
-    <div class="player blue" id="p4">84</div>
-    <div class="player blue" id="p5">88</div>
+    <!-- PLAYERS -->
 
-    <!-- OPPONENT -->
-    <div class="player red" id="op1">84</div>
-    <div class="player red" id="op2">86</div>
-    <div class="player red" id="op3">89</div>
+    <div class="player myPlayer selected"
+         id="p1"
+         style="left:45%;top:28%;">
+        91
+        <div class="name">DHRUV</div>
+    </div>
 
-    <div class="ball" id="ball"></div>
+    <div class="player myPlayer"
+         id="p2"
+         style="left:27%;top:40%;">
+        86
+        <div class="name">SAM</div>
+    </div>
+
+    <div class="player myPlayer"
+         id="p3"
+         style="left:63%;top:40%;">
+        87
+        <div class="name">VIVEK</div>
+    </div>
+
+    <div class="player myPlayer"
+         id="p4"
+         style="left:40%;top:54%;">
+        84
+        <div class="name">VIKAS</div>
+    </div>
+
+    <div class="player myPlayer"
+         id="p5"
+         style="left:56%;top:54%;">
+        88
+        <div class="name">RAHUL</div>
+    </div>
+
+    <!-- OPPONENTS -->
+
+    <div class="player enemy"
+         id="e1"
+         style="left:25%;top:65%;">
+        84
+        <div class="name">OP1</div>
+    </div>
+
+    <div class="player enemy"
+         id="e2"
+         style="left:62%;top:65%;">
+        86
+        <div class="name">OP2</div>
+    </div>
+
+    <div class="player enemy"
+         id="e3"
+         style="left:44%;top:72%;">
+        89
+        <div class="name">OP3</div>
+    </div>
+
+    <!-- BALL -->
+
+    <div id="ball"></div>
+
+    <!-- JOYSTICK -->
+
+    <div id="joystick">
+        <div id="stick"></div>
+    </div>
+
+    <!-- BUTTONS -->
+
+    <div id="buttons">
+
+        <button
+            id="pass"
+            class="action"
+            onclick="passBall()">
+            PASS
+        </button>
+
+        <button
+            id="sprint"
+            class="action"
+            onclick="sprint()">
+            SPRINT
+        </button>
+
+        <button
+            id="shoot"
+            class="action"
+            onclick="shoot()">
+            SHOOT
+        </button>
+
+    </div>
+
+    <div id="message"></div>
 
 </div>
-
-<!-- JOYSTICK -->
-<div class="joystick" id="joystick">
-    <div class="stick" id="stick"></div>
-</div>
-
-<!-- CONTROLS -->
-<div class="controls">
-
-    <button class="btn pass" onclick="passBall()">
-        PASS
-    </button>
-
-    <button class="btn sprint" onclick="sprint()">
-        SPRINT
-    </button>
-
-    <button class="btn shoot" onclick="shoot()">
-        SHOOT
-    </button>
-
-</div>
-
-<div class="message" id="message"></div>
 
 <script>
 
-/* TIMER */
+/* -------------------------
+   GAME VARIABLES
+------------------------- */
+
+let myScore = 0;
+let opponentScore = 0;
 
 let seconds = 0;
 
-setInterval(() => {
+let paused = false;
 
-    seconds++;
+let playerX = window.innerWidth * .45;
+let playerY = window.innerHeight * .28;
 
-    let min =
-        String(Math.floor(seconds / 60)).padStart(2,"0");
-
-    let sec =
-        String(seconds % 60).padStart(2,"0");
-
-    document.getElementById("time").innerText =
-        min + ":" + sec;
-
-},1000);
-
-
-/* MESSAGE */
-
-function showMessage(text){
-
-    const m =
-        document.getElementById("message");
-
-    m.innerText = text;
-    m.style.display = "block";
-
-    setTimeout(() => {
-        m.style.display = "none";
-    },900);
-}
-
-
-/* PASS */
-
-function passBall(){
-
-    showMessage("PASS!");
-
-    const ball =
-        document.getElementById("ball");
-
-    ball.style.left = "60%";
-    ball.style.top = "52%";
-}
-
-
-/* SHOOT */
-
-function shoot(){
-
-    showMessage("⚽ SHOOT!");
-
-    setTimeout(() => {
-
-        let goal =
-            Math.random() > .55;
-
-        if(goal){
-
-            document.getElementById("score")
-                .innerText = "1 - 0";
-
-            showMessage("⚽ GOAL!");
-
-        }else{
-
-            showMessage("SAVE!");
-
-        }
-
-    },700);
-}
-
-
-/* SPRINT */
-
-function sprint(){
-
-    showMessage("⚡ SPRINT!");
-
-}
-
-
-/* JOYSTICK */
-
-const joystick =
-    document.getElementById("joystick");
-
-const stick =
-    document.getElementById("stick");
+let sprinting = false;
 
 const player =
     document.getElementById("p1");
 
-let dragging = false;
+const ball =
+    document.getElementById("ball");
+
+const stick =
+    document.getElementById("stick");
+
+const joystick =
+    document.getElementById("joystick");
+
+
+/* -------------------------
+   TIMER
+------------------------- */
+
+setInterval(function(){
+
+    if(paused) return;
+
+    seconds++;
+
+    let minutes =
+        Math.floor(seconds / 60);
+
+    let secs =
+        seconds % 60;
+
+    document.getElementById("timer")
+        .innerText =
+        String(minutes).padStart(2,"0")
+        + ":" +
+        String(secs).padStart(2,"0");
+
+},1000);
+
+
+/* -------------------------
+   MESSAGE
+------------------------- */
+
+function message(text){
+
+    const box =
+        document.getElementById("message");
+
+    box.innerText = text;
+    box.style.display = "block";
+
+    setTimeout(function(){
+
+        box.style.display = "none";
+
+    },900);
+}
+
+
+/* -------------------------
+   UPDATE SCORE
+------------------------- */
+
+function updateScore(){
+
+    document.getElementById("score")
+        .innerText =
+        myScore + " - " + opponentScore;
+
+}
+
+
+/* -------------------------
+   PASS
+------------------------- */
+
+function passBall(){
+
+    if(paused) return;
+
+    message("PASS!");
+
+    let x =
+        playerX + 70;
+
+    let y =
+        playerY;
+
+    animateBall(x,y);
+}
+
+
+/* -------------------------
+   SHOOT
+------------------------- */
+
+function shoot(){
+
+    if(paused) return;
+
+    message("SHOOT!");
+
+    let chance =
+        Math.random();
+
+    setTimeout(function(){
+
+        if(chance > .45){
+
+            myScore++;
+
+            updateScore();
+
+            message("⚽ GOAL!");
+
+        }else{
+
+            message("🧤 SAVE!");
+
+        }
+
+    },700);
+
+}
+
+
+/* -------------------------
+   SPRINT
+------------------------- */
+
+function sprint(){
+
+    if(paused) return;
+
+    sprinting = true;
+
+    message("⚡ SPRINT!");
+
+    setTimeout(function(){
+
+        sprinting = false;
+
+    },1200);
+
+}
+
+
+/* -------------------------
+   BALL
+------------------------- */
+
+function animateBall(x,y){
+
+    ball.style.left = x + "px";
+    ball.style.top = y + "px";
+
+}
+
+
+/* -------------------------
+   JOYSTICK
+------------------------- */
+
+let touching = false;
 
 joystick.addEventListener(
     "touchstart",
-    () => {
-        dragging = true;
-    }
+    function(e){
+
+        touching = true;
+
+        e.preventDefault();
+
+    },
+    {passive:false}
 );
+
 
 joystick.addEventListener(
     "touchmove",
-    e => {
+    function(e){
 
-        if(!dragging) return;
+        if(!touching || paused)
+            return;
 
-        const touch = e.touches[0];
+        e.preventDefault();
 
-        const rect =
+        let touch =
+            e.touches[0];
+
+        let rect =
             joystick.getBoundingClientRect();
 
         let x =
             touch.clientX -
             rect.left -
-            60;
+            62;
 
         let y =
             touch.clientY -
             rect.top -
-            60;
+            62;
 
-        const distance =
+        let distance =
             Math.sqrt(x*x+y*y);
 
-        if(distance > 35){
+        if(distance > 38){
 
-            x = x / distance * 35;
-            y = y / distance * 35;
+            x =
+                x / distance * 38;
+
+            y =
+                y / distance * 38;
 
         }
 
         stick.style.transform =
-            `translate(${x}px,${y}px)`;
+            "translate("+x+"px,"+y+"px)";
 
-        let left =
-            player.offsetLeft + x * .15;
+        let speed =
+            sprinting ? 1.8 : 1;
 
-        let top =
-            player.offsetTop + y * .15;
+        playerX += x * .08 * speed;
+        playerY += y * .08 * speed;
+
+        playerX =
+            Math.max(
+                5,
+                Math.min(
+                    window.innerWidth-53,
+                    playerX
+                )
+            );
+
+        playerY =
+            Math.max(
+                100,
+                Math.min(
+                    window.innerHeight-70,
+                    playerY
+                )
+            );
 
         player.style.left =
-            Math.max(
-                0,
-                Math.min(
-                    window.innerWidth-48,
-                    left
-                )
-            ) + "px";
+            playerX + "px";
 
         player.style.top =
-            Math.max(
-                80,
-                Math.min(
-                    window.innerHeight-48,
-                    top
-                )
-            ) + "px";
-    }
+            playerY + "px";
+
+        animateBall(
+            playerX+14,
+            playerY+55
+        );
+
+    },
+    {passive:false}
 );
+
 
 joystick.addEventListener(
     "touchend",
-    () => {
+    function(){
 
-        dragging = false;
+        touching = false;
 
         stick.style.transform =
             "translate(0,0)";
+
     }
 );
+
+
+/* -------------------------
+   OPPONENT AI
+------------------------- */
+
+const enemies = [
+    document.getElementById("e1"),
+    document.getElementById("e2"),
+    document.getElementById("e3")
+];
+
+setInterval(function(){
+
+    if(paused) return;
+
+    enemies.forEach(function(enemy){
+
+        let left =
+            parseFloat(enemy.style.left);
+
+        let top =
+            parseFloat(enemy.style.top);
+
+        let move =
+            (Math.random()-.5) * .5;
+
+        enemy.style.left =
+            (left + move) + "%";
+
+        enemy.style.top =
+            (top + move) + "%";
+
+    });
+
+},300);
+
+
+/* -------------------------
+   PAUSE
+------------------------- */
+
+function pauseGame(){
+
+    paused = !paused;
+
+    document.getElementById("pause")
+        .innerText =
+        paused ? "▶" : "Ⅱ";
+
+    message(
+        paused ? "PAUSED" : "RESUME"
+    );
+
+}
 
 </script>
 
