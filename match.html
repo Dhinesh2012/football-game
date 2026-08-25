@@ -1,0 +1,419 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dhinesh FC - Match</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  height:100vh;
+  overflow:hidden;
+  background:#08752d;
+  color:white;
+}
+
+/* SCOREBOARD */
+.scoreboard{
+  position:absolute;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:10;
+  width:310px;
+  padding:10px 14px;
+  border-radius:12px;
+  background:rgba(4,18,10,.94);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 4px 15px rgba(0,0,0,.4);
+}
+
+.team{
+  text-align:center;
+  width:105px;
+}
+
+.team-name{
+  font-size:13px;
+  font-weight:bold;
+}
+
+.score{
+  font-size:25px;
+  font-weight:900;
+  margin-top:2px;
+}
+
+.timer{
+  text-align:center;
+  font-size:13px;
+  color:#ffd83d;
+  font-weight:bold;
+}
+
+/* PITCH */
+.pitch{
+  position:absolute;
+  inset:0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #16843a 0px,
+      #16843a 70px,
+      #197e38 70px,
+      #197e38 140px
+    );
+}
+
+/* FIELD LINES */
+.midline{
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:3px;
+  background:rgba(255,255,255,.8);
+}
+
+.circle{
+  position:absolute;
+  width:125px;
+  height:125px;
+  border:3px solid rgba(255,255,255,.8);
+  border-radius:50%;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+}
+
+.dot{
+  position:absolute;
+  width:10px;
+  height:10px;
+  background:white;
+  border-radius:50%;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+}
+
+.goal-left,
+.goal-right{
+  position:absolute;
+  top:42%;
+  width:105px;
+  height:18%;
+  border:3px solid rgba(255,255,255,.8);
+}
+
+.goal-left{
+  left:0;
+  border-left:0;
+}
+
+.goal-right{
+  right:0;
+  border-right:0;
+}
+
+/* PLAYER */
+.player{
+  position:absolute;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:#f4d34d;
+  border:3px solid white;
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  box-shadow:0 3px 8px rgba(0,0,0,.5);
+  z-index:4;
+}
+
+.p1{left:20%;top:50%}
+.p2{left:32%;top:38%}
+.p3{left:32%;top:62%}
+.p4{left:45%;top:50%}
+.p5{left:55%;top:42%}
+.p6{left:67%;top:50%}
+
+.opponent{
+  background:#e84b4b;
+}
+
+.o1{left:78%;top:50%}
+.o2{left:68%;top:35%}
+.o3{left:68%;top:65%}
+.o4{left:55%;top:58%}
+
+/* BALL */
+.ball{
+  position:absolute;
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  background:white;
+  border:2px solid #222;
+  left:51%;
+  top:50%;
+  z-index:5;
+  box-shadow:0 2px 6px rgba(0,0,0,.5);
+}
+
+/* CONTROLS */
+.joystick{
+  position:absolute;
+  left:25px;
+  bottom:35px;
+  width:125px;
+  height:125px;
+  border:2px solid rgba(255,255,255,.6);
+  border-radius:50%;
+  background:rgba(0,0,0,.12);
+}
+
+.stick{
+  position:absolute;
+  width:58px;
+  height:58px;
+  left:33px;
+  top:33px;
+  border-radius:50%;
+  background:rgba(255,255,255,.8);
+}
+
+/* BUTTONS */
+.controls{
+  position:absolute;
+  right:20px;
+  bottom:30px;
+  width:180px;
+  height:180px;
+}
+
+.action{
+  position:absolute;
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  border:3px solid rgba(255,255,255,.75);
+  color:white;
+  font-weight:900;
+  font-size:13px;
+}
+
+.pass{
+  left:0;
+  bottom:20px;
+  background:#1688e8;
+}
+
+.shoot{
+  right:0;
+  bottom:0;
+  background:#e52e32;
+}
+
+.sprint{
+  right:0;
+  top:0;
+  background:#1d9b50;
+}
+
+.tackle{
+  left:0;
+  top:0;
+  background:#f08c22;
+}
+
+/* MESSAGE */
+.message{
+  position:absolute;
+  left:50%;
+  top:62%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,.85);
+  padding:12px 22px;
+  border-radius:25px;
+  display:none;
+  z-index:20;
+  font-weight:bold;
+}
+
+/* PAUSE */
+.pause{
+  position:absolute;
+  top:15px;
+  right:15px;
+  z-index:15;
+  background:rgba(0,0,0,.65);
+  border:0;
+  color:white;
+  border-radius:50%;
+  width:42px;
+  height:42px;
+  font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="pitch">
+
+  <div class="midline"></div>
+  <div class="circle"></div>
+  <div class="dot"></div>
+
+  <div class="goal-left"></div>
+  <div class="goal-right"></div>
+
+  <!-- YOUR PLAYERS -->
+  <div class="player p1">7</div>
+  <div class="player p2">10</div>
+  <div class="player p3">11</div>
+  <div class="player p4">8</div>
+  <div class="player p5">9</div>
+  <div class="player p6">6</div>
+
+  <!-- OPPONENTS -->
+  <div class="player opponent o1">1</div>
+  <div class="player opponent o2">4</div>
+  <div class="player opponent o3">5</div>
+  <div class="player opponent o4">8</div>
+
+  <div class="ball" id="ball"></div>
+
+</div>
+
+<!-- SCORE -->
+<div class="scoreboard">
+
+  <div class="team">
+    <div class="team-name">DHINESH FC</div>
+    <div class="score" id="myScore">0</div>
+  </div>
+
+  <div class="timer" id="timer">00:00</div>
+
+  <div class="team">
+    <div class="team-name">RIVAL FC</div>
+    <div class="score" id="oppScore">0</div>
+  </div>
+
+</div>
+
+<button class="pause" onclick="pauseGame()">Ⅱ</button>
+
+<!-- JOYSTICK -->
+<div class="joystick">
+  <div class="stick"></div>
+</div>
+
+<!-- ACTION BUTTONS -->
+<div class="controls">
+
+  <button class="action tackle"
+  onclick="message('TACKLE!')">
+  TACKLE
+  </button>
+
+  <button class="action sprint"
+  onclick="message('SPRINT!')">
+  SPRINT
+  </button>
+
+  <button class="action pass"
+  onclick="message('PASS!')">
+  PASS
+  </button>
+
+  <button class="action shoot"
+  onclick="shoot()">
+  SHOOT
+  </button>
+
+</div>
+
+<div class="message" id="message"></div>
+
+<script>
+
+let seconds = 0;
+let paused = false;
+
+setInterval(function(){
+
+  if(!paused){
+
+    seconds++;
+
+    let min = Math.floor(seconds/60);
+    let sec = seconds%60;
+
+    document.getElementById("timer").innerText =
+      String(min).padStart(2,"0") + ":" +
+      String(sec).padStart(2,"0");
+
+  }
+
+},1000);
+
+function message(text){
+
+  let box=document.getElementById("message");
+
+  box.innerText=text;
+  box.style.display="block";
+
+  setTimeout(function(){
+    box.style.display="none";
+  },900);
+}
+
+function shoot(){
+
+  message("⚽ SHOT!");
+
+  setTimeout(function(){
+
+    if(Math.random() > .55){
+
+      document.getElementById("myScore").innerText =
+        Number(document.getElementById("myScore").innerText)+1;
+
+      message("🔥 GOAL!");
+
+    }else{
+
+      message("🧤 SAVED!");
+
+    }
+
+  },700);
+}
+
+function pauseGame(){
+
+  paused=!paused;
+
+  message(paused ? "⏸ MATCH PAUSED" : "▶ MATCH RESUMED");
+
+}
+
+</script>
+
+</body>
+</html>
